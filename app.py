@@ -22,9 +22,15 @@ def remove_background():
     # Convert bytes to PIL image
     image = Image.open(io.BytesIO(output_image)).convert("RGBA")
 
+    # Create a white background
+    white_background = Image.new("RGBA", image.size, (255, 255, 255, 255))
+
+    # Paste the image on top of the white background (keeping the transparency)
+    white_background.paste(image, (0, 0), image)
+
     # Save the final image to BytesIO
     output_io = io.BytesIO()
-    image.save(output_io, format="PNG")
+    white_background.save(output_io, format="PNG")
     output_io.seek(0)
 
     return send_file(output_io, mimetype='image/png')
